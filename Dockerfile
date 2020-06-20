@@ -20,4 +20,4 @@ COPY --from=base /usr/local/lib/python3.7 /usr/local/lib/python3.7
 COPY ./. /rss_feeds
 RUN chmod 700 /rss_feeds/content_reader.py
 
-CMD ["python", "/rss_feeds/content_reader.py"]
+CMD ["python", "/rss_feeds/content_reader.py", "local_store"]

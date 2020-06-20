@@ -184,9 +184,6 @@ def log_last_processed_id(last_processed_id: int, last_processed_time_stamp: str
     }
     with open(TWITTER_LAST_RUN_FILENAME, "w") as f:
         f.write(json.dumps(msg))
-    # s3_client = boto_client("s3")
-    # response = s3_client.upload_file(TWITTER_LAST_RUN_FILENAME, TWITTER_LAST_RUN_BUCKET, TWITTER_LAST_RUN_FILENAME)
-    # return response
 
 
 def get_since_id_from_file(self):
@@ -196,7 +193,9 @@ def get_since_id_from_file(self):
 
 
 class LocalCache:
-    def log_last_processed_id(last_processed_id: int, last_processed_time_stamp: str):
+    def log_last_processed_id(
+        self, last_processed_id: int, last_processed_time_stamp: str
+    ):
         msg = {
             "last_processed_id": last_processed_id,
             "last_processed_time_stamp": last_processed_time_stamp,
@@ -219,7 +218,7 @@ class S3Cache:
             aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
             aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS"),
         )
-        self.local_cache = self.LocalCache()
+        self.local_cache = LocalCache()
 
     def log_last_processed_id(
         self, last_processed_id: int, last_processed_time_stamp: str
@@ -228,7 +227,7 @@ class S3Cache:
             last_processed_id, last_processed_time_stamp
         )
 
-        response = self.upload_file(
+        response = self.client.upload_file(
             TWITTER_LAST_RUN_FILENAME,
             TWITTER_LAST_RUN_BUCKET,
             TWITTER_LAST_RUN_FILENAME,

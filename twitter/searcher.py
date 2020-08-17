@@ -32,7 +32,7 @@ QUERIES = [
     # recommended by freezman
     "#bluefall",
     "#PoliceBrutality",
-    "#PoliceBrutailtyPandemic",
+    "#PoliceBrutalityPandemic",
     "#Protests2020",
     # cities by population - protests
     "#nycProtests",
@@ -50,7 +50,10 @@ QUERIES = [
     "#dcprotests",
     "#WashingtonDCProtest",
     "#seattleprotest",
-    "#austinprotest"
+    "#seattleprotests",
+    "#seattleprotestcomms",
+    "#austinprotest",
+    "defendpdx",
     # found from 949mac's endpoint https://api.846policebrutality.com/api/incidents?include=evidence
     "#GeorgeFloyd",
     "#JusticeForGeorgeFloyd",
@@ -59,6 +62,21 @@ QUERIES = [
     "tear gas",
     # Common occurrences
     "#DefundThePolice",
+    # Users
+    "@greg_doucette",
+    "@misanthrophile",
+    "@TheRealCoryElia",
+    "@hungrybowtie",
+    "@PDocumentarians",
+    "@suzettesmith",
+    "@chadloder",
+    "@R3volutionDaddy",
+    "@spekulation",
+    "@MrOlmos",
+    "@gravemorgan",
+    "@KohzKah",
+    "@bogwitchenergy",
+    "@danielvmedia",
 ]
 
 

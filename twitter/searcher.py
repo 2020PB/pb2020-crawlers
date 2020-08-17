@@ -93,7 +93,6 @@ def run_twitter_searches(since_id: int) -> int:
         logger.info(f"Querying: {query}")
         cursor = query_twitter(api, query, since_id)
         for resp in cursor:
-            logger.info("Found a tweet!")
             total_returned_tweets += 1
             tweet = resp._json
             id_tweet = tweet["id"]

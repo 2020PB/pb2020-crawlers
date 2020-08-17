@@ -90,8 +90,10 @@ def run_twitter_searches(since_id: int) -> int:
     max_processed_id = 0
     max_processed_time_stamp = 0
     for query in QUERIES:
+        logger.info(f"Querying: {query}")
         cursor = query_twitter(api, query, since_id)
         for resp in cursor:
+            logger.info("Found a tweet!")
             total_returned_tweets += 1
             tweet = resp._json
             id_tweet = tweet["id"]
@@ -134,6 +136,7 @@ def convert_tweet(tweet: Dict[str, Any], processed_id_tweets: Set[int]) -> Tuple
     id_tweet = tweet["id"]
     if id_tweet in processed_id_tweets:
         return None, processed_id_tweets
+    logger.info("Found a tweet to add!")
     processed_id_tweets.add(id_tweet)
 
     converted_date = twitter_created_at_to_utc(tweet["created_at"])

@@ -60,9 +60,62 @@ TWITTER_ACCESS_TOKEN_SECRET = getenv("TWITTER_ACCESS_TOKEN_SECRET")
 
 
 DATADOG_OPTIONS = {
-    "statsd_socket_path": getenv(
-        "DATADOG_SOCKET_PATH", "/var/run/dogstatsd/statsd.socket"
-    ),
+    "statsd_socket_path": getenv("DATADOG_SOCKET_PATH", "/var/run/dogstatsd/statsd.socket"),
     "api_key": getenv("DATADOG_API_KEY"),
     "app_key": getenv("DATADOG_APP_KEY"),
 }
+
+QUERIES = [
+    # May want to remove later on,
+    "#PrideMarch",
+    # recommended by freezman
+    "#bluefall",
+    "#PoliceBrutality",
+    "#PoliceBrutalityPandemic",
+    "#Protests2020",
+    # cities by population - protests
+    "#nycProtests",
+    "#newyorkProtests",
+    "#losangelesProtests",
+    "#laprotests",
+    "#stLouisProtests",
+    "#stlProtests",
+    "#philadelphiaprotests",
+    "#phillyprotests",
+    "#chicagoprotests",
+    "#houstonprotests",
+    "#phoenixProtests",
+    "#miamiProtests",
+    "#dcprotests",
+    "#WashingtonDCProtest",
+    "#seattleprotest",
+    "#seattleprotests",
+    "#seattleprotestcomms",
+    "#austinprotest",
+    "#defendpdx",
+    # found from 949mac's endpoint https://api.846policebrutality.com/api/incidents?include=evidence
+    "#GeorgeFloyd",
+    "#JusticeForGeorgeFloyd",
+    "#AbolishThePolice",
+    "#BlackLivesMatter",
+    '"tear gas"',
+    # Common occurrences
+    "#DefundThePolice",
+    # Users
+    "from:greg_doucette",
+    "from:1misanthrophile",
+    "from:TheRealCoryElia",
+    "from:hungrybowtie",
+    "from:PDocumentarians",
+    "from:suzettesmith",
+    "from:chadloder",
+    "from:R3volutionDaddy",
+    "from:spekulation",
+    "from:MrOlmos",
+    "from:gravemorgan",
+    "from:KohzKah",
+    "from:bogwitchenergy",
+    "from:danielvmedia",
+    "from:HayesGardner",
+    "from:JLJLovesRVA",
+]

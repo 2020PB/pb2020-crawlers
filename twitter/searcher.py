@@ -26,65 +26,8 @@ from common.config import (
 
 logger = logging.getLogger(__name__)
 
-# from common.utils import write_raw_submissions_to_csv
 
-QUERIES = [
-    # May want to remove later on,
-    "#PrideMarch",
-    # recommended by freezman
-    "#bluefall",
-    "#PoliceBrutality",
-    "#PoliceBrutalityPandemic",
-    "#Protests2020",
-    # cities by population - protests
-    "#nycProtests",
-    "#newyorkProtests",
-    "#losangelesProtests",
-    "#laprotests",
-    "#stLouisProtests",
-    "#stlProtests",
-    "#philadelphiaprotests",
-    "#phillyprotests",
-    "#chicagoprotests",
-    "#houstonprotests",
-    "#phoenixProtests",
-    "#miamiProtests",
-    "#dcprotests",
-    "#WashingtonDCProtest",
-    "#seattleprotest",
-    "#seattleprotests",
-    "#seattleprotestcomms",
-    "#austinprotest",
-    "defendpdx",
-    # found from 949mac's endpoint https://api.846policebrutality.com/api/incidents?include=evidence
-    "#GeorgeFloyd",
-    "#JusticeForGeorgeFloyd",
-    "#AbolishThePolice",
-    "#BlackLivesMatter",
-    "tear gas",
-    # Common occurrences
-    "#DefundThePolice",
-    # Users
-    "@greg_doucette",
-    "@misanthrophile",
-    "@TheRealCoryElia",
-    "@hungrybowtie",
-    "@PDocumentarians",
-    "@suzettesmith",
-    "@chadloder",
-    "@R3volutionDaddy",
-    "@spekulation",
-    "@MrOlmos",
-    "@gravemorgan",
-    "@KohzKah",
-    "@bogwitchenergy",
-    "@danielvmedia",
-    "@HayesGardner",
-    "@JLJLovesRVA",
-]
-
-
-def run_twitter_searches(since_id: int, job_mode: str) -> int:
+def run_twitter_searches(since_id: int, queries: List[str], job_mode: str) -> int:
     if not since_id:
         since_id = get_since_id_from_file()
     api = build_tweepy_api()
@@ -93,7 +36,7 @@ def run_twitter_searches(since_id: int, job_mode: str) -> int:
     processed_id_tweets = set()
     max_processed_id = 0
     max_processed_time_stamp = 0
-    for query in QUERIES:
+    for query in queries:
         logger.info(f"Querying: {query}")
         cursor = query_twitter(api, query, since_id)
         for resp in cursor:
@@ -114,7 +57,8 @@ def run_twitter_searches(since_id: int, job_mode: str) -> int:
                 continue
             bulk_upload_submissions(submissions, TWITTER_LARAVEL_API_KEY, READER_MODE)
     logger.info(f"total_returned_tweets {total_returned_tweets}")
-    log_last_processed_id(max_processed_id, max_processed_time_stamp)
+    if max_processed_id > 0:
+        log_last_processed_id(max_processed_id, max_processed_time_stamp)
     return max_processed_id
 
 
@@ -127,7 +71,14 @@ def build_tweepy_api():
 def query_twitter(api, query: str, since_id: int):
     # TODO: include result_type? (mixed, recent, popular) probably want recent once batching is set up
     # TODO: why wasn't count working
-    return tweepy.Cursor(api.search, q=query, lang="en", since_id=since_id, include_entities=True).items()
+    return tweepy.Cursor(
+        api.search,
+        q=f"{query} filter:videos -is:retweet",
+        lang="en",
+        since_id=since_id,
+        include_entities=True,
+        result_type="recent",
+    ).items()
 
 
 def convert_tweet(tweet: Dict[str, Any], processed_id_tweets: Set[int]) -> Tuple[List[RawSubmission], Set[int]]:

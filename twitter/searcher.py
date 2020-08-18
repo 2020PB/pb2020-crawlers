@@ -77,6 +77,8 @@ QUERIES = [
     "@KohzKah",
     "@bogwitchenergy",
     "@danielvmedia",
+    "@HayesGardner",
+    "@JLJLovesRVA",
 ]
 
 
@@ -93,6 +95,7 @@ def run_twitter_searches(since_id: int) -> int:
         logger.info(f"Querying: {query}")
         cursor = query_twitter(api, query, since_id)
         for resp in cursor:
+            statsd.increment(f"twitter.read_post", 1, tags=[f"job_mode:{job_mode}", f"query:{query}"])
             total_returned_tweets += 1
             tweet = resp._json
             id_tweet = tweet["id"]

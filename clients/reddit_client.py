@@ -25,5 +25,7 @@ def make_new_reddit_client() -> Reddit:
 
 def stream_posts(reddit_client: Reddit, subreddits: List[str], job_mode: str) -> Generator[Submission, None, None]:
     for submission in reddit_client.subreddit("+".join(SUBREDDITS)).stream.submissions():
-        statsd.increment(f"reddit.read_post", 1, tags=[f"job_mode:{job_mode}"])
+        statsd.increment(
+            f"reddit.read_post", 1, tags=[f"job_mode:{job_mode}", f"query:{submission.subreddit.display_name}"]
+        )
         yield submission

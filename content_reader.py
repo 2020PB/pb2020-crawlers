@@ -23,7 +23,7 @@ if __name__ == "__main__":
             if READER_MODE == "reddit":
                 run_reddit_feed()
             elif READER_MODE == "twitter":
-                twitter_since_id = run_twitter_searches(twitter_since_id)
+                twitter_since_id = run_twitter_searches(twitter_since_id, READER_MODE)
             else:
                 raise ValueError(f"READER_MODE {READER_MODE} not supported")
             logger.info(f"Job complete. Sleeping for {JOB_SLEEP_TIME_SECONDS} seconds.")

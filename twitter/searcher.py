@@ -1,8 +1,10 @@
-import tweepy
-from typing import Dict, List, Any, Set, Tuple
+from datadog import statsd
 from datetime import datetime
 import json
 import logging
+import tweepy
+from typing import Dict, List, Any, Set, Tuple
+
 
 # from boto3 import client as boto_client
 
@@ -82,7 +84,7 @@ QUERIES = [
 ]
 
 
-def run_twitter_searches(since_id: int) -> int:
+def run_twitter_searches(since_id: int, job_mode: str) -> int:
     if not since_id:
         since_id = get_since_id_from_file()
     api = build_tweepy_api()

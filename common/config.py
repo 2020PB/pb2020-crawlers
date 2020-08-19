@@ -66,8 +66,6 @@ DATADOG_OPTIONS = {
 }
 
 QUERIES = [
-    # May want to remove later on,
-    "#PrideMarch",
     # recommended by freezman
     "#bluefall",
     "#PoliceBrutality",
@@ -97,10 +95,7 @@ QUERIES = [
     "#GeorgeFloyd",
     "#JusticeForGeorgeFloyd",
     "#AbolishThePolice",
-    "#BlackLivesMatter",
     '"tear gas"',
-    # Common occurrences
-    "#DefundThePolice",
     # Users
     "from:greg_doucette",
     "from:1misanthrophile",

@@ -53,7 +53,10 @@ def run_twitter_searches(since_id: int, queries: List[str], job_mode: str) -> in
                 continue
             query_submissions.extend(submissions)
 
-        bulk_upload_submissions(query_submissions, TWITTER_LARAVEL_API_KEY, READER_MODE)
+        statsd.increment(f"twitter.query_processed", 1, tags=[f"job_mode:{job_mode}", f"query:{query}"])
+
+        if query_submissions:
+            bulk_upload_submissions(query_submissions, TWITTER_LARAVEL_API_KEY, READER_MODE)
     logger.info(f"total_returned_tweets {total_returned_tweets}")
     if max_processed_id > 0:
         log_last_processed_id(max_processed_id, max_processed_time_stamp)

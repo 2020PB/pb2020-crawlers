@@ -27,6 +27,7 @@ def bulk_upload_submissions(raw_submissions: List[RawSubmission], api_key: str, 
         f"laravel.{LARAVEL_ENDPOINT}.request_size", len(pickle.dumps(data_dump)), tags=[f"job_mode:{job_mode}"]
     )
     statsd.increment(f"laravel.{LARAVEL_ENDPOINT}.success", 1, tags=[f"job_mode:{job_mode}"])
+    statsd.increment(f"laravel.{LARAVEL_ENDPOINT}.num_rows", len(raw_submissions), tags=[f"job_mode:{job_mode}"])
 
     if resp.status_code != 200:
         raise ValueError(f"Failed to upload to Laravel with resp: {resp.text}")

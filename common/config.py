@@ -92,8 +92,6 @@ QUERIES = [
     "#austinprotest",
     "#defendpdx",
     # found from 949mac's endpoint https://api.846policebrutality.com/api/incidents?include=evidence
-    "#GeorgeFloyd",
-    "#JusticeForGeorgeFloyd",
     "#AbolishThePolice",
     '"tear gas"',
     # Users
@@ -113,4 +111,5 @@ QUERIES = [
     "from:danielvmedia",
     "from:HayesGardner",
     "from:JLJLovesRVA",
+    "from:MaranieRae",
 ]

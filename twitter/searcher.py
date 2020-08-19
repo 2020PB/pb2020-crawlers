@@ -97,7 +97,7 @@ def convert_tweet(tweet: Dict[str, Any], processed_id_tweets: Set[int]) -> Tuple
     elif tweet["user"].get("location"):
         submission_body = f"User Location: {tweet['user']['location']}"
 
-    media_url = f'https://twitter.com/{tweet["user"]["id"]}/status/{id_tweet}'
+    media_url = f'https://twitter.com/{tweet["user"]["screen_name"]}/status/{id_tweet}'
     submission = RawSubmission(
         data_source=DataSource.twitter,
         id_source=id_tweet,

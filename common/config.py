@@ -112,4 +112,10 @@ QUERIES = [
     "from:HayesGardner",
     "from:JLJLovesRVA",
     "from:MaranieRae",
+    "from:queencitynerve",
+    "from:jefftaylorhuman",
+    "from:themariague",
+    "from:MrJesusJMontero",
+    "from:RichieRequena",
+    "from:hgflores_",
 ]

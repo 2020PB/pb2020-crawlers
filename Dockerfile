@@ -12,7 +12,7 @@ RUN find /usr/local/lib/python3.7 -name '*.pxd' -delete
 RUN find /usr/local/lib/python3.7 -name '*.pyd' -delete
 # Cleaning up __pycache__ gains more space
 RUN find /usr/local/lib/python3.7 -name '__pycache__' | xargs rm -r
-		
+
 FROM python:3.7-slim-buster
 WORKDIR  /rss_feeds
 

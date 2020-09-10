@@ -1,12 +1,11 @@
 from datadog import statsd
 from datetime import datetime
+from typing import Dict, List, Any, Set, Tuple
+import boto3
 import json
 import logging
+import os
 import tweepy
-from typing import Dict, List, Any, Set, Tuple
-
-
-# from boto3 import client as boto_client
 
 from common.data_classes import RawSubmission
 from common.enums import DataSource
@@ -14,7 +13,7 @@ from common.enums import DataSource
 from clients.laravel_client import bulk_upload_submissions
 from common.config import (
     TWITTER_LAST_RUN_FILENAME,
-    # TWITTER_LAST_RUN_BUCKET,
+    TWITTER_LAST_RUN_BUCKET,
     TWITTER_LARAVEL_API_KEY,
     TWITTER_CONSUMER_KEY,
     TWITTER_CONSUMER_SECRET,
@@ -27,9 +26,16 @@ from common.config import (
 logger = logging.getLogger(__name__)
 
 
-def run_twitter_searches(since_id: int, queries: List[str], job_mode: str) -> int:
+def run_twitter_searches(since_id: int, queries: List[str], job_mode: str, local_store: bool = False) -> int:
+    cache = LocalCache()
+    logger.info(f"Local store: {local_store}")
+
+    if not local_store:
+        cache = S3Cache()
+
     if not since_id:
-        since_id = get_since_id_from_file()
+        since_id = cache.get_since_id_from_file()
+
     api = build_tweepy_api()
     total_returned_tweets = 0
     processed_id_tweets = set()
@@ -57,9 +63,8 @@ def run_twitter_searches(since_id: int, queries: List[str], job_mode: str) -> in
 
         if query_submissions:
             bulk_upload_submissions(query_submissions, TWITTER_LARAVEL_API_KEY, READER_MODE)
-    logger.info(f"total_returned_tweets {total_returned_tweets}")
     if max_processed_id > 0:
-        log_last_processed_id(max_processed_id, max_processed_time_stamp)
+        cache.log_last_processed_id(max_processed_id, max_processed_time_stamp)
     return max_processed_id
 
 
@@ -120,18 +125,60 @@ def twitter_created_at_to_utc(created_at: str):
 
 # TODO: hook up to s3 bucket
 def log_last_processed_id(last_processed_id: int, last_processed_time_stamp: str):
-    msg = {"last_processed_id": last_processed_id, "last_processed_time_stamp": last_processed_time_stamp}
+    msg = {
+        "last_processed_id": last_processed_id,
+        "last_processed_time_stamp": last_processed_time_stamp,
+    }
     with open(TWITTER_LAST_RUN_FILENAME, "w") as f:
         f.write(json.dumps(msg))
-    # s3_client = boto_client("s3")
-    # response = s3_client.upload_file(TWITTER_LAST_RUN_FILENAME, TWITTER_LAST_RUN_BUCKET, TWITTER_LAST_RUN_FILENAME)
-    # return response
 
 
-def get_since_id_from_file():
+def get_since_id_from_file(self):
     with open(TWITTER_LAST_RUN_FILENAME, "r") as f:
         d = json.load(f)
     return d.get("last_processed_id")
+
+
+class LocalCache:
+    def log_last_processed_id(self, last_processed_id: int, last_processed_time_stamp: str):
+        msg = {
+            "last_processed_id": last_processed_id,
+            "last_processed_time_stamp": last_processed_time_stamp,
+        }
+        with open(TWITTER_LAST_RUN_FILENAME, "w") as f:
+            f.write(json.dumps(msg))
+
+    def get_since_id_from_file(self):
+        with open(TWITTER_LAST_RUN_FILENAME, "r") as f:
+            d = json.load(f)
+        return d.get("last_processed_id")
+
+
+class S3Cache:
+    def __init__(self):
+        logger.info("HEYO S3")
+        self.file = None
+        self.client = boto3.client(
+            "s3",
+            # Hard coded strings as credentials, not recommended.
+            aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
+            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS"),
+        )
+        self.local_cache = LocalCache()
+
+    def log_last_processed_id(self, last_processed_id: int, last_processed_time_stamp: str):
+        self.local_cache.log_last_processed_id(last_processed_id, last_processed_time_stamp)
+
+        response = self.client.upload_file(
+            TWITTER_LAST_RUN_FILENAME, TWITTER_LAST_RUN_BUCKET, TWITTER_LAST_RUN_FILENAME,
+        )
+        return response
+
+    def get_since_id_from_file(self):
+        self.client.download_file(
+            TWITTER_LAST_RUN_BUCKET, TWITTER_LAST_RUN_FILENAME, TWITTER_LAST_RUN_FILENAME,
+        )
+        return self.local_cache.get_since_id_from_file()
 
 
 if __name__ == "__main__":

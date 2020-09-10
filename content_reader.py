@@ -1,8 +1,9 @@
 from datadog import initialize
+
 import logging
 import time
 
-from common.config import DATADOG_OPTIONS, JOB_SLEEP_TIME_SECONDS, READER_MODE, QUERIES
+from common.config import DATADOG_OPTIONS, JOB_SLEEP_TIME_SECONDS, READER_MODE, QUERIES, LOCAL_STORE
 from reddit.feed_reader import run_reddit_feed
 from twitter.searcher import run_twitter_searches
 
@@ -23,7 +24,7 @@ if __name__ == "__main__":
             if READER_MODE == "reddit":
                 run_reddit_feed()
             elif READER_MODE == "twitter":
-                twitter_since_id = run_twitter_searches(twitter_since_id, QUERIES, READER_MODE)
+                twitter_since_id = run_twitter_searches(twitter_since_id, QUERIES, READER_MODE, LOCAL_STORE)
             else:
                 raise ValueError(f"READER_MODE {READER_MODE} not supported")
             logger.info(f"Job complete. Sleeping for {JOB_SLEEP_TIME_SECONDS} seconds.")

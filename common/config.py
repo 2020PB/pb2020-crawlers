@@ -82,7 +82,7 @@ DATADOG_OPTIONS = {
 }
 
 QUERIES = [
-    recommended by freezman
+    # recommended by freezman
     "#bluefall",
     "#PoliceBrutality",
     "#PoliceBrutalityPandemic",

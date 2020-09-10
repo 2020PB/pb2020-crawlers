@@ -123,22 +123,6 @@ def twitter_created_at_to_utc(created_at: str):
     return datetime.strptime(created_at, "%a %b %d %H:%M:%S %z %Y")
 
 
-# TODO: hook up to s3 bucket
-def log_last_processed_id(last_processed_id: int, last_processed_time_stamp: str):
-    msg = {
-        "last_processed_id": last_processed_id,
-        "last_processed_time_stamp": last_processed_time_stamp,
-    }
-    with open(TWITTER_LAST_RUN_FILENAME, "w") as f:
-        f.write(json.dumps(msg))
-
-
-def get_since_id_from_file(self):
-    with open(TWITTER_LAST_RUN_FILENAME, "r") as f:
-        d = json.load(f)
-    return d.get("last_processed_id")
-
-
 class LocalCache:
     def log_last_processed_id(self, last_processed_id: int, last_processed_time_stamp: str):
         msg = {

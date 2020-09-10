@@ -51,12 +51,28 @@ TWITTER_LARAVEL_API_KEY = getenv("TWITTER_LARAVEL_API_KEY")
 DATE_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 TWITTER_LAST_RUN_FILENAME = "twitter_job_last_run.json"
-TWITTER_LAST_RUN_BUCKET = ""
+TWITTER_LAST_RUN_BUCKET = "last-id-cache"
 DEFAULT_TWITTER_LAST_RUN_ID = 1270867714505158656
 TWITTER_CONSUMER_KEY = getenv("TWITTER_CONSUMER_KEY")
 TWITTER_CONSUMER_SECRET = getenv("TWITTER_CONSUMER_SECRET")
 TWITTER_ACCESS_TOKEN = getenv("TWITTER_ACCESS_TOKEN")
 TWITTER_ACCESS_TOKEN_SECRET = getenv("TWITTER_ACCESS_TOKEN_SECRET")
+
+
+def str2bool(v):
+    if not v:
+        return False
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ("yes", "true", "t", "y", "1"):
+        return True
+    elif v.lower() in ("no", "false", "f", "n", "0"):
+        return False
+    else:
+        raise argparse.ArgumentTypeError("Boolean value expected.")
+
+
+LOCAL_STORE = str2bool(getenv("LOCAL_STORE"))
 
 
 DATADOG_OPTIONS = {
@@ -118,4 +134,5 @@ QUERIES = [
     "from:MrJesusJMontero",
     "from:RichieRequena",
     "from:hgflores_",
+    "from:ChuckModi1",
 ]

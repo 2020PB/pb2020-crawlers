@@ -51,13 +51,8 @@ def run_form_reader(
 
 def _process_form_results(rows: List[List[Any]], last_run_datetime: datetime) -> List[RawSubmission]:
     results = []
-    i = 0
-    for row in rows:
-        i += 1
-        if i == 1:
-            continue
-
-        if row[0] == "":
+    for idx, row in enumerate(rows):
+        if idx == 0 or row[0] == "":
             continue
 
         row_timestamp = datetime.strptime(row[0], GOOGLE_DATETIME_FORMAT)

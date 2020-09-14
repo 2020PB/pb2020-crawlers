@@ -21,7 +21,7 @@ def run_form_reader(
     form_id: str,
     job_mode: str,
     last_run_date_str: Optional[str] = None,
-    local_store: bool = True,
+    local_store: bool = False,
 ) -> None:
 
     curtime = datetime.now()
@@ -62,7 +62,7 @@ def _process_form_results(rows: List[List[Any]], last_run_datetime: datetime) ->
         results.append(
             RawSubmission(
                 data_source=DataSource.google_form,
-                id_source=i,
+                id_source=idx,
                 submission_community="",
                 submission_datetime_utc=row_timestamp,
                 submission_title=f"{row[8]} - {row[4]} - {row[5]} - {row[6]}",

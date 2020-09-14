@@ -1,16 +1,13 @@
 from datadog import statsd
 from datetime import datetime
 from typing import Dict, List, Any, Set, Tuple
-import boto3
-import json
 import logging
-import os
 import tweepy
 
+from clients.laravel_client import bulk_upload_submissions
+from common.cache import LocalCache, S3Cache
 from common.data_classes import RawSubmission
 from common.enums import DataSource
-
-from clients.laravel_client import bulk_upload_submissions
 from common.config import (
     TWITTER_LAST_RUN_FILENAME,
     TWITTER_LAST_RUN_BUCKET,
@@ -27,11 +24,11 @@ logger = logging.getLogger(__name__)
 
 
 def run_twitter_searches(since_id: int, queries: List[str], job_mode: str, local_store: bool = False) -> int:
-    cache = LocalCache()
+    cache = LocalCache(TWITTER_LAST_RUN_FILENAME)
     logger.info(f"Local store: {local_store}")
 
     if not local_store:
-        cache = S3Cache()
+        cache = S3Cache(TWITTER_LAST_RUN_FILENAME, TWITTER_LAST_RUN_BUCKET)
 
     if not since_id:
         since_id = cache.get_since_id_from_file()
@@ -121,49 +118,3 @@ def convert_tweet(tweet: Dict[str, Any], processed_id_tweets: Set[int]) -> Tuple
 def twitter_created_at_to_utc(created_at: str):
     # created at format: "Mon Aug 06 19:28:16 +0000 2018",
     return datetime.strptime(created_at, "%a %b %d %H:%M:%S %z %Y")
-
-
-class LocalCache:
-    def log_last_processed_id(self, last_processed_id: int, last_processed_time_stamp: str):
-        msg = {
-            "last_processed_id": last_processed_id,
-            "last_processed_time_stamp": last_processed_time_stamp,
-        }
-        with open(TWITTER_LAST_RUN_FILENAME, "w") as f:
-            f.write(json.dumps(msg))
-
-    def get_since_id_from_file(self):
-        with open(TWITTER_LAST_RUN_FILENAME, "r") as f:
-            d = json.load(f)
-        return d.get("last_processed_id")
-
-
-class S3Cache:
-    def __init__(self):
-        logger.info("HEYO S3")
-        self.file = None
-        self.client = boto3.client(
-            "s3",
-            # Hard coded strings as credentials, not recommended.
-            aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
-            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS"),
-        )
-        self.local_cache = LocalCache()
-
-    def log_last_processed_id(self, last_processed_id: int, last_processed_time_stamp: str):
-        self.local_cache.log_last_processed_id(last_processed_id, last_processed_time_stamp)
-
-        response = self.client.upload_file(
-            TWITTER_LAST_RUN_FILENAME, TWITTER_LAST_RUN_BUCKET, TWITTER_LAST_RUN_FILENAME,
-        )
-        return response
-
-    def get_since_id_from_file(self):
-        self.client.download_file(
-            TWITTER_LAST_RUN_BUCKET, TWITTER_LAST_RUN_FILENAME, TWITTER_LAST_RUN_FILENAME,
-        )
-        return self.local_cache.get_since_id_from_file()
-
-
-if __name__ == "__main__":
-    run_twitter_searches()

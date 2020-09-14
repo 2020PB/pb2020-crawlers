@@ -136,3 +136,9 @@ QUERIES = [
     "from:hgflores_",
     "from:ChuckModi1",
 ]
+
+GOOGLE_FORM_ID = getenv("GOOGLE_FORM_ID")
+GOOGLE_SERVICE_ACCOUNT_FILE = getenv("GOOGLE_SERVICE_ACCOUNT_FILE")
+GOOGLE_DATETIME_FORMAT = "%m/%d/%Y %H:%M:%S"
+GOOGLE_LAST_RUN_FILENAME = "google_forms_last_run_date.json"
+GOOGLE_FORMS_LARAVEL_API_KEY = getenv("GOOGLE_FORMS_LARAVEL_API_KEY")

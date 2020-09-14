@@ -2,3 +2,5 @@
 *pytest_cache
 .env*
 *kubernetes/*
+gspread_service_account.json
+*.DS_Store

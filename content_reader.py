@@ -41,6 +41,8 @@ if __name__ == "__main__":
             else:
                 raise ValueError(f"READER_MODE {READER_MODE} not supported")
             statsd.increment(f"job.finish", 1, tags=[f"job_mode:{READER_MODE}"])
+            if READER_MODE in {"form"}:
+                exit(0)
             logger.info(f"Job complete. Sleeping for {JOB_SLEEP_TIME_SECONDS} seconds.")
             time.sleep(JOB_SLEEP_TIME_SECONDS)
     except KeyboardInterrupt:

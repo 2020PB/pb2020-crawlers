@@ -110,6 +110,9 @@ QUERIES = [
     # found from 949mac's endpoint https://api.846policebrutality.com/api/incidents?include=evidence
     "#AbolishThePolice",
     '"tear gas"',
+    # addtl,
+    "#BreonnaTaylor",
+    "#Louisville",
     # Users
     "from:greg_doucette",
     "from:1misanthrophile",

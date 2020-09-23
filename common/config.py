@@ -139,6 +139,7 @@ QUERIES = [
     "from:hgflores_",
     "from:ChuckModi1",
     "from:BGOnTheScene",
+    "from:WHAS11Heather",
 ]
 
 GOOGLE_FORM_ID = getenv("GOOGLE_FORM_ID")

@@ -111,7 +111,6 @@ QUERIES = [
     "#AbolishThePolice",
     '"tear gas"',
     # addtl,
-    "#BreonnaTaylor",
     "#Louisville",
     # Users
     "from:greg_doucette",

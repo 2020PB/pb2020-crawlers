@@ -56,7 +56,11 @@ def run_twitter_searches(since_id: int, queries: List[str], job_mode: str, local
                 continue
             query_submissions.extend(submissions)
 
-        statsd.increment(f"twitter.query_processed", 1, tags=[f"job_mode:{job_mode}", f"query:{query}"])
+        statsd.increment(
+            f"twitter.query_processed",
+            1,
+            tags=[f"job_mode:{job_mode}", f"query:{query}"],
+        )
 
         if query_submissions:
             bulk_upload_submissions(query_submissions, TWITTER_LARAVEL_API_KEY, READER_MODE)
